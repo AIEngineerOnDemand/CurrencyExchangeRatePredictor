@@ -2,3 +2,4 @@ models/__pycache__/arima.cpython-39.pyc
 schizzi.py
 utils/__pycache__/utils.cpython-39.pyc
 data/*.csv
+models/__pycache__/base_model.cpython-39.pyc
