@@ -1,3 +1,4 @@
+from .base_model import BaseModel
 from statsmodels.tsa.arima_model import ARIMA
 
 class ARIMAModel(BaseModel):
