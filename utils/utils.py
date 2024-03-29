@@ -15,7 +15,7 @@ def get_exchange_rate_history(from_currency, to_currency, start_date, end_date):
     # Check if the file exists
     if os.path.exists(file_path):
         # If the file exists, read it
-        data = pd.read_csv(file_path)
+        data = pd.read_csv(file_path, parse_dates=['Date'], index_col='Date')
     else:
         # If the file does not exist, download the data
         ticker_symbol = f"{from_currency}{to_currency}=X"
@@ -25,15 +25,14 @@ def get_exchange_rate_history(from_currency, to_currency, start_date, end_date):
         data.to_csv(file_path)
 
     return data
-
-def plot_predictions(actual_data, predicted_data, title, filename):
-    plt.figure(figsize=(10, 6))
-    plt.plot(actual_data['Date'], actual_data['Rate'], color='black', label='Actual')
-    plt.plot(predicted_data['Date'], predicted_data['Rate'], color='red', label='Predicted')
+def plot_predictions(train, test, predicted_data, title, filename):
+    plt.figure(figsize=(10, 5))
+    plt.plot(train.index, train['High'], color='black', label='Train')
+    plt.plot(test.index, test['High'], color='blue', label='Test')
+    plt.plot(predicted_data.index, predicted_data['Rate'], color='red', label='Predicted')
+    plt.title(title)
     plt.xlabel('Date')
     plt.ylabel('Exchange Rate')
-    plt.title(title)
     plt.legend()
-
-    # Save the plot as a PNG file
     plt.savefig(filename)
+    plt.show()
