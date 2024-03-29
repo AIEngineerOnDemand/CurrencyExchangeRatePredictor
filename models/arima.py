@@ -1,12 +1,14 @@
 from .base_model import BaseModel
-from statsmodels.tsa.arima_model import ARIMA
+from statsmodels.tsa.arima.model import ARIMA
 
 class ARIMAModel(BaseModel):
     def __init__(self, order):
-        self.model = ARIMA(order=order)
+        self.order = order
+        self.model = None
 
-    def train(self, X_train, y_train):
-        self.model.fit(X_train, y_train)
+    def train(self, data):
+        self.model = ARIMA(data, order=self.order)
+        self.model_fit = self.model.fit()
 
-    def predict(self, X_test):
-        return self.model.predict(X_test)
+    def predict(self, start, end):
+        return self.model_fit.predict(start=start, end=end)
