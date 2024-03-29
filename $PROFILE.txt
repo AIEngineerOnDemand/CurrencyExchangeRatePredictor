@@ -1,0 +1,5 @@
+New-Item -path $PROFILE -type file -force
+function prompt {
+    $p = Split-Path -leaf -path (Get-Location)
+    "$p> "
+}
