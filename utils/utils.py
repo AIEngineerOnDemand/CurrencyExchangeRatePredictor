@@ -34,5 +34,6 @@ def plot_predictions(train, test, predicted_data, title, filename):
     plt.xlabel('Date')
     plt.ylabel('Exchange Rate')
     plt.legend()
+    plt.xticks(rotation=45)  # Add this line to rotate the x-axis labels
     plt.savefig(filename)
     plt.show()
