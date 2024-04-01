@@ -1,9 +1,18 @@
+import joblib
+from dataclasses import dataclass
+
+@dataclass
 class BaseModel:
-    def __init__(self):
-        pass
+    model: any = None
 
-    def train(self, X_train, y_train):
-        raise NotImplementedError("Subclass must implement this method")
+    def train(self, data):
+        raise NotImplementedError
 
-    def predict(self, X_test):
-        raise NotImplementedError("Subclass must implement this method")
+    def predict(self, data):
+        raise NotImplementedError
+
+    def save(self, filename):
+        joblib.dump(self.model, filename)
+
+    def load(self, filename):
+        self.model = joblib.load(filename)
