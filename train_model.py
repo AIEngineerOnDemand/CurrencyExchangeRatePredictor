@@ -1,5 +1,6 @@
 from models.arima import ARIMAModel
-from utils.utils import get_exchange_rate_history,split_data,parse_common_args
+from utils.utils import get_exchange_rate_history, split_data, parse_common_args
+import yaml
 
 # Parse command line arguments
 args = parse_common_args()
