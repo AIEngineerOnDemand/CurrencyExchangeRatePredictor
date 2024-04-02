@@ -1,23 +1,42 @@
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime
+from train_model import train_model
+from main import run_inference
 import yaml
-import mlflow
 
-# Load parameters from YAML file
-with open('params.yml', 'r') as file:
-    params = yaml.safe_load(file)
+# Load parameters from params.yml
+with open('params.yml', 'r') as f:
+    params = yaml.safe_load(f)
 
-# Run the training script as an MLflow project
-print("Starting training...")
-result = mlflow.run("train_model.py", parameters=params)
-print(f"Training completed with status: {result.get_status()}")
+# Define the DAG
+dag = DAG('currency_exchange_rate_predictor', description='A DAG that trains and deploys a currency exchange rate prediction model',
+          schedule_interval='0 0 * * *',
+          start_date=datetime(2022, 1, 1), catchup=False)
 
-# Define the parameters for the inference script
-infer_params = {
-    'model_name': f"ARIMA_{tuple(params['model_order'])}_{params['train_start_date']}_to_{params['train_end_date']}_model.pkl",
-    'start_date': params['extract_end_date'],
-    'end_date': params['extract_end_date']
-}
+# Define the training task
+train_model_task = PythonOperator(
+    task_id='train_model',
+    python_callable=train_model,
+    op_kwargs=params,
+    dag=dag,
+    do_xcom_push=True  # This makes the task return its result (the model name)
+)
 
-# Run the inference script as an MLflow project
-print("Starting inference...")
-result = mlflow.run("main.py", parameters=infer_params)
-print(f"Inference completed with status: {result.get_status()}")
+
+# Define the inference task
+run_inference_task = PythonOperator(
+    task_id='run_inference',
+    python_callable=run_inference,
+    op_kwargs=params,
+    dag=dag
+)
+
+# Set the task dependencies
+train_model_task >> run_inference_task
+
+# Get the model name from the train_model_task
+model_name = train_model_task.output
+
+# Pass the model name to the run_inference_task
+run_inference_task.op_kwargs['model_name'] = model_name
