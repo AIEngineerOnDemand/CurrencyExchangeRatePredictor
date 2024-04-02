@@ -13,3 +13,4 @@ venv/
 
 # Ignore MLflow files
 mlruns/
+schizzi.py
