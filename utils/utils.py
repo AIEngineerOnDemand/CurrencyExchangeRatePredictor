@@ -12,7 +12,7 @@ def parse_common_args():
     parser.add_argument('--extract_end_date', type=str)
     parser.add_argument('--train_start_date', type=str)
     parser.add_argument('--train_end_date', type=str)
-    parser.add_argument('--model_order', type=str)  # Pass as a string, e.g., "[1, 1, 1]"
+    parser.add_argument('--model_order', type=str)  
     args = parser.parse_args()
 
     # Convert model_order from string to list of integers
